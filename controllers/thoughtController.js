@@ -1,4 +1,4 @@
-const { thought, user, reaction } = require("../models");
+const { thought, user } = require("../models");
 
 module.exports = {
   // Get all thoughts
@@ -64,6 +64,29 @@ module.exports = {
           ? res.status(404).json({ message: "No thought with this id!" })
           : res.json(user)
       )
+      .catch((err) => res.status(500).json(err));
+  },
+
+  // Add an assignment to a student
+  addReaction(req, res) {
+    thought
+      .findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $addToSet: { reactions: req.body } },
+        { runValidators: true, new: true }
+      )
+      .then((reaction) => res.json(reaction))
+      .catch((err) => res.status(500).json(err));
+  },
+  // Remove assignment from a student
+  removeReaction(req, res) {
+    thought
+      .findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $pull: { reactions: req.body } },
+        { runValidators: true, new: true }
+      )
+      .then((reaction) => res.json(reaction))
       .catch((err) => res.status(500).json(err));
   },
 };

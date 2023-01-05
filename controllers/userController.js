@@ -57,4 +57,27 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
+
+  // Add an assignment to a student
+  addFriend(req, res) {
+    user
+      .findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { friends: req.body } },
+        { runValidators: true, new: true }
+      )
+      .then((friend) => res.json(friend))
+      .catch((err) => res.status(500).json(err));
+  },
+  // Remove assignment from a student
+  removeFriend(req, res) {
+    user
+      .findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: req.params.friendId } },
+        { new: true }
+      )
+      .then((friend) => res.json(friend))
+      .catch((err) => res.status(500).json(err));
+  },
 };
